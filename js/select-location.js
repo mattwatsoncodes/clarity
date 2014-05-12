@@ -5,15 +5,15 @@ jQuery(document).ready(function($){
 	var pageHeight = $('html').height();
 	var wrapperHeight = pageHeight - 170;
 	
-	$('.tree-wrapper').css({"height": wrapperHeight + 'px' });
+	//$('.tree-wrapper').css({"height": wrapperHeight + 'px' });
 
 	$('.tree li:has(ul)').addClass('parent').addClass('closed').prepend('<img src="img/folder.png" alt="closed folder"/>');	
 	$('.tree li:not(:has(ul))').prepend('<img src="img/page_white.png" alt="closed folder"/>');	
 	
 	$('.tree a').click(function(e){
 	
-		var values = $(this).attr('href').split('=')
-		var selected_value = values[values.length - 1];
+		var values = $(this).parent().attr('class');
+		var selected_value = values.replace(/[^0-9.]/g, "");
 	
 		$('li.root a').removeClass('selected');
 		$('.tree a').removeClass('selected');

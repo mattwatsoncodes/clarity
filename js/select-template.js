@@ -4,7 +4,7 @@ jQuery(document).ready(function($){
 	
 	var pageHeight = $('html').height();
 	var wrapperHeight = pageHeight - 170;
-	$('.template-wrapper').css({"height": wrapperHeight + 'px' });
+	//$('.template-wrapper').css({"height": wrapperHeight + 'px' });
 	
 	$('.screenshot-wrapper a').click(function(e){
 		$('#template_id').val($(this).attr('href'));
@@ -14,5 +14,15 @@ jQuery(document).ready(function($){
 		return false;
 	});
 	
-	
+	var height = 0;
+	$('.screenshot-wrapper a').each(function(){
+		if(height < $(this).innerHeight())
+		{
+			height = $(this).innerHeight();
+		}
+	});
+
+	$('.screenshot-wrapper a').each(function(){
+		$(this).height(height);
+	});
 });

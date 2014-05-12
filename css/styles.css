@@ -13,10 +13,14 @@ html,body
 .tree-wrapper
 {
 	border:1px solid #ccc;
-	padding:5px 20px 20px 20px;
+	padding:5px 20px 0px 20px;
 	margin-bottom: 20px;
 	overflow: auto;
 	display: block;
+}
+
+.tree-wrapper ul {
+	list-style: none;
 }
 
 li.root img
@@ -29,7 +33,7 @@ ul.tree a
 {
 	text-decoration: none;
 	color:#333;
-	padding:3px 6px 3px 6px;
+	padding:2px 3px 2px 3px;
 	margin-left: 3px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px; 
@@ -74,6 +78,7 @@ ul.tree li {
    padding: 0 12px;
    line-height: 20px;
    background: url(../img/node.png) no-repeat;
+   background-position: top left;
    color: #369;
    font-weight: bold;
 }
@@ -86,7 +91,7 @@ ul.tree li:last-child {
 ul.tree li img
 {
 	position: relative;
-	top:2px;
+	top:-2px;
 	margin: 0px 0px 0px 2px;
 
 }
@@ -97,6 +102,11 @@ ul.tree li img.closed:hover
 
 	cursor: hand; 
 	cursor: pointer;
+}
+
+li.root li {
+	padding-top: 4px;
+	padding-bottom: 4px;
 }
 
 .template-wrapper
@@ -134,7 +144,7 @@ ul.tree li img.closed:hover
 	color:#333;
 	text-decoration: none;
 	font-weight: normal;
-	height: 132px;
+	height: auto;
 
 }
 
