@@ -189,7 +189,7 @@ function clarity_do_page() {
 	<?php
 }
 
-function my_admin_scripts() {
+function clarity_admin_scripts() {
 	wp_enqueue_script('media-upload');
 	wp_enqueue_script('thickbox');
 	wp_register_script('b6-wp-content-flow-upload', plugins_url('/clarity/js/options.js'), array('jquery','media-upload','thickbox'));
@@ -197,13 +197,13 @@ function my_admin_scripts() {
 	wp_enqueue_style('clarity_modal_css', plugins_url('/clarity/css/styles.css'));
 }
 
-function my_admin_styles() {
+function clarity_admin_styles() {
 	wp_enqueue_style('thickbox');
 }
 
 if (isset($_GET['page']) && $_GET['page'] == 'clarity') {
-	add_action('admin_print_scripts', 'my_admin_scripts');
-	add_action('admin_print_styles', 'my_admin_styles');
+	add_action('admin_print_scripts', 'clarity_admin_scripts');
+	add_action('admin_print_styles', 'clarity_admin_styles');
 }
 
 // Sanitize and validate input. Accepts an array, return a sanitized array.
