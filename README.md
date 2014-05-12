@@ -1,4 +1,4 @@
-b6-clarity-wizard
-=================
+clarity
+=======
 
-REFERENCE ONLY: Old version of clarity wizard
+Template Wizard for WordPress
