@@ -1,21 +1,26 @@
 <?php
 
-	$file = str_replace("wp-content/plugins/clarity", "", dirname(__FILE__));
+	function clarity_wp_path() {
+		if (strstr($_SERVER["SCRIPT_FILENAME"], "/wp-content/")) {
+			return preg_replace("/\/wp-content\/.*/", "", $_SERVER["SCRIPT_FILENAME"]);
+		}
+		return preg_replace("/\/[^\/]+?\/themes\/.*/", "", $_SERVER["SCRIPT_FILENAME"]);
+	}
 
 	//The inclusion of these files allows full use of all functions of wordpress
-	require_once($file.'wp-load.php');
-	require_once($file.'wp-admin/includes/admin.php');
+	require_once( clarity_wp_path() . '/wp-load.php');
+	require_once( clarity_wp_path() . '/wp-admin/includes/admin.php');
 	 
 	wp_enqueue_style( 'wp-admin' );
 	wp_enqueue_style( 'colors-fresh' );
-	wp_enqueue_style('clarity_modal_css', plugins_url('/clarity/css/styles.css'));
+	wp_enqueue_style('clarity_modal_css', plugins_url('css/styles.css', __FILE__));
 	 
 	//We need to add scripts to the footer, but we dont want to enable the admin bar
 	wp_deregister_script( 'admin-bar' );
 	wp_deregister_style( 'admin-bar' );
 	remove_action('wp_footer','wp_admin_bar_render',1000);
 	wp_enqueue_script("jquery");
-	wp_enqueue_script('clarity_select_location_js', plugins_url('/clarity/js/select-location.js'));
+	wp_enqueue_script('clarity_select_location_js', plugins_url('js/select-location.js', __FILE__));
 ?>
 <!DOCTYPE html>
 <html>

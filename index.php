@@ -24,14 +24,17 @@ function clarity() {
 		if (( $pagenow == 'post-new.php' ) && ($_GET['post_type'] == 'page')) {
 
 			// creating a new page!
-			wp_enqueue_script('clarity_js', plugins_url('/clarity/js/scripts.js'));
+			wp_register_script('clarity_js', plugins_url('js/scripts.js', __FILE__));
+			$clarity_object = array( 'path' => plugins_url('', __FILE__));
+			wp_localize_script( 'clarity_js', 'clarity_object', $clarity_object );
+			wp_enqueue_script( 'clarity_js' );
 		}
 	}
 }
 
 add_action( 'admin_footer', 'clarity' );
-add_action('admin_init', 'clarity_init' );
-add_action('admin_menu', 'clarity_add_page');
+add_action( 'admin_init', 'clarity_init' );
+add_action( 'admin_menu', 'clarity_add_page' );
 
 // Init plugin options to white list our options
 function clarity_init(){
@@ -46,7 +49,7 @@ function clarity_add_page() {
 // Draw the menu page itself
 function clarity_do_page() {
 
-	$template_link = plugins_url('/clarity/img/default.png');
+	$template_link = plugins_url('img/default.png', __FILE__);
 
 	?>
 		<div class="wrap">
@@ -192,9 +195,10 @@ function clarity_do_page() {
 function clarity_admin_scripts() {
 	wp_enqueue_script('media-upload');
 	wp_enqueue_script('thickbox');
-	wp_register_script('b6-wp-content-flow-upload', plugins_url('/clarity/js/options.js'), array('jquery','media-upload','thickbox'));
-	wp_enqueue_script('b6-wp-content-flow-upload');
-	wp_enqueue_style('clarity_modal_css', plugins_url('/clarity/css/styles.css'));
+	wp_register_script('clarity-upload', plugins_url('js/options.js', __FILE__), array('jquery','media-upload','thickbox'));
+	wp_enqueue_script('clarity-upload');
+	wp_enqueue_style('clarity_modal_css', plugins_url('css/styles.css', __FILE__));
+
 }
 
 function clarity_admin_styles() {
