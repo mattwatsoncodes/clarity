@@ -15,6 +15,13 @@ Licence:      GPLv2 or later
 License URI:  http://www.gnu.org/licenses/gpl-2.0.html
 */
 
+/**
+ * 
+ * @since  		1.0.0
+ * 
+ * Fire the thickbox if we are adding a new post
+ * 
+ */
 function clarity() {
 
 	global $pagenow;
@@ -23,30 +30,64 @@ function clarity() {
 	{
 		if (( $pagenow == 'post-new.php' ) && ($_GET['post_type'] == 'page')) {
 
+			$ajax_url = add_query_arg(
+				array( 
+					'action' 	=> 'clarity_ajax_location',
+					'TB_iframe' => 1,
+					'width' 	=> 800,
+					'height' 	=> 550
+				), 
+				admin_url( 'admin-ajax.php' ) 
+			); 
 			// creating a new page!
 			wp_register_script('clarity_js', plugins_url('js/scripts.js', __FILE__));
-			$clarity_object = array( 'path' => plugins_url('', __FILE__));
+			$clarity_object = array( 'path' => plugins_url('', __FILE__), 'ajax_url' => $ajax_url);
 			wp_localize_script( 'clarity_js', 'clarity_object', $clarity_object );
 			wp_enqueue_script( 'clarity_js' );
+			
 		}
 	}
 }
-
 add_action( 'admin_footer', 'clarity' );
-add_action( 'admin_init', 'clarity_init' );
-add_action( 'admin_menu', 'clarity_add_page' );
 
-// Init plugin options to white list our options
-function clarity_init(){
-	register_setting( 'clarity_options', 'clarity_group', 'clarity_validate' );
-}
 
-// Add menu page
+
+
+/**
+ * 
+ * @since  		1.0.0
+ * 
+ * Add the clarity menu page
+ * 
+ */
 function clarity_add_page() {
 	add_options_page('Clarity', 'Clarity', 'manage_options', 'clarity', 'clarity_do_page');
 }
+add_action( 'admin_menu', 'clarity_add_page' );
 
-// Draw the menu page itself
+
+
+/**
+ * 
+ * @since  		1.0.0
+ * 
+ * Register clarity options
+ * 
+ */
+function clarity_init(){
+	register_setting( 'clarity_options', 'clarity_group', 'clarity_validate' );
+}
+add_action( 'admin_init', 'clarity_init' );
+
+
+
+/**
+ * 
+ * @since  		1.0.0
+ * 
+ * Draw the menu page
+ * 
+ */
 function clarity_do_page() {
 
 	$template_link = plugins_url('img/default.png', __FILE__);
@@ -192,6 +233,14 @@ function clarity_do_page() {
 	<?php
 }
 
+
+/**
+ * 
+ * @since  		1.0.0
+ * 
+ * Add JS
+ * 
+ */
 function clarity_admin_scripts() {
 	wp_enqueue_script('media-upload');
 	wp_enqueue_script('thickbox');
@@ -201,16 +250,40 @@ function clarity_admin_scripts() {
 
 }
 
+
+
+/**
+ * 
+ * @since  		1.0.0
+ * 
+ * Add CSS
+ * 
+ */
 function clarity_admin_styles() {
 	wp_enqueue_style('thickbox');
 }
 
+
+/**
+ * 
+ * @since  		1.0.0
+ * 
+ * Register the CSS and JS
+ * 
+ */
 if (isset($_GET['page']) && $_GET['page'] == 'clarity') {
 	add_action('admin_print_scripts', 'clarity_admin_scripts');
 	add_action('admin_print_styles', 'clarity_admin_styles');
 }
 
-// Sanitize and validate input. Accepts an array, return a sanitized array.
+
+/**
+ * 
+ * @since  		1.0.0
+ * 
+ * Sanitize and validate input. Accepts an array, return a sanitized array.
+ * 
+ */
 function clarity_validate($input) {
 
 	$templates = get_page_templates();
@@ -225,3 +298,241 @@ function clarity_validate($input) {
 
 	return $input;
 }
+
+
+
+/**
+ * 
+ * @since  		1.0.0
+ * 
+ * Render the location popup
+ * 
+ */
+function clarity_render_ajax_location()
+{
+	$ajax_url = add_query_arg(
+		array( 
+			'action' 	=> 'clarity_ajax_template',
+			'TB_iframe' => 1,
+			'width' 	=> 800,
+			'height' 	=> 550
+		), 
+		admin_url( 'admin-ajax.php' ) 
+	); 
+	wp_enqueue_style('clarity_modal_css', plugins_url('css/styles.css', __FILE__));
+	wp_enqueue_script("jquery");
+	wp_register_script('clarity_select_location_js', plugins_url('js/select-location.js', __FILE__));
+	$clarity_object = array( 'path' => plugins_url('', __FILE__), 'ajax_url' => $ajax_url);
+	wp_localize_script( 'clarity_select_location_js', 'clarity_object', $clarity_object );
+	wp_enqueue_script( 'clarity_select_location_js' );
+	?>
+	<!DOCTYPE html>
+	<html>
+	<head>
+		<title>Clarity</title>
+		<?php wp_head(); ?>
+		<style>
+			html,body
+			{
+				margin-top: 0px !important;
+			}
+		</style>
+	</head>
+	<body>
+		
+		<div class="wrap">
+		<h1>Select a location</h1>
+		<p>Select a location from the content tree below and click &lsquo;next&rsquo; to continue.</p>
+		<p>Click on a folder to view the pages within it.</p>
+
+		<form enctype="multipart/form-data" method="post" action="<?php echo $ajax_url; ?>">
+			
+		<div class="tree-wrapper">
+		<ul>
+			<li class="root">
+				<img src="<?php echo plugins_url('img/folder_page_white.png', __FILE__);?>" alt="folder" width="16" height="16"> <a href="#" class="selected">Root</a>
+				<ul class="tree">
+					<?php wp_list_pages('title_li='); ?>
+				</ul>
+			</li>
+		</ul>
+		</div>
+			
+			<input type="text" name="parent_id" id="parent_id" value="0" hidden="hidden">
+			<input type="submit" name="next" id="next" class="button button-highlighted" value="Next">
+		</form>
+		</div>
+		<?php wp_footer(); ?>
+	</body>
+	</html>
+	<?php
+	exit();
+}
+add_action( 'wp_ajax_'        . 'clarity_ajax_location', 'clarity_render_ajax_location' );
+add_action( 'wp_ajax_nopriv_' . 'clarity_ajax_location', 'clarity_render_ajax_location' );
+
+
+
+/**
+ * 
+ * @since  		1.0.0
+ * 
+ * Render the template popup
+ * 
+ */
+function clarity_render_ajax_template()
+{
+	$ajax_url = add_query_arg(
+		array( 
+			'action' 	=> 'clarity_ajax_template',
+			'TB_iframe' => 1,
+			'width' 	=> 800,
+			'height' 	=> 550
+		), 
+		admin_url( 'admin-ajax.php' ) 
+	); 
+	if(isset($_POST['template_id']))
+	{
+		$current_user = wp_get_current_user();
+
+		$post = array(
+			'post_author' => $current_user->ID ,
+			'post_parent' => $_POST['parent_id'],
+			'post_type'   => 'page'
+		);
+
+		$page_id = wp_insert_post($post);
+
+		update_post_meta($page_id, "_wp_page_template", $_POST['template_id']);
+
+		echo "<script>parent.location = '".admin_url()."post.php?post=".$page_id."&action=edit';parent.eval('tb_remove()'); </script>";
+	}
+
+	wp_enqueue_style('clarity_modal_css', plugins_url('css/styles.css', __FILE__));
+
+	//We need to add scripts to the footer, but we dont want to enable the admin bar
+	wp_enqueue_script("jquery");
+	wp_enqueue_script('clarity_select_location_js', plugins_url('js/select-template.js?v=2', __FILE__));
+	?>
+	<!DOCTYPE html>
+	<html>
+	<head>
+		<title>Clarity</title><?php wp_head(); ?>
+		<style type="text/css">
+			html,body
+			{
+				margin-top: 0px !important;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="wrap">
+			<h1>Select a template</h1>
+
+			<p>Select a template from the gallery below and click &lsquo;finish&rsquo;.</p>
+
+			<form enctype="multipart/form-data" method="post" action="<?php echo $ajax_url;?>">
+				<div class="template-wrapper">
+				<?php
+					$templates = get_page_templates();
+
+					$options = get_option('clarity_group');
+
+					$template_image = plugins_url('img/default.png', __FILE__);
+
+					if(isset($options['clarity_default-image']) && $options['clarity_default-image'] != '' && $options['clarity_default-image'] != false)
+					{
+						$template_image = $options['clarity_default-image'];
+					}
+
+					if($options['clarity_default-image-auto'])
+					{
+						$pages = get_pages(array(
+							'meta_key' => '_wp_page_template',
+							'meta_value' => $template_filename,
+							'hierarchical' => 0
+						));
+
+						if(count($pages)>0)
+						{
+
+							$headers = get_headers(get_permalink( $pages[0] -> ID), 1);
+							if ($headers[0] == 'HTTP/1.1 200 OK') {
+								$template_image = get_permalink( $pages[0] -> ID);
+							}
+						}
+					}
+
+				?>
+
+				<div class="screenshot-wrapper">
+					<a href="Default" class="selected"><img src="<?php echo $template_image ?>" class="screenshot" width="118" height="95"> Default</a>
+				</div>
+				<?php
+
+					$template_image = plugins_url('img/default.png', __FILE__);
+
+					foreach ( $templates as $template_name => $template_filename ) 
+					{
+
+						$template_shortname = 'clarity_'.str_replace('.php','',$template_filename);
+						$template_shortname = str_replace("/", "_", $template_shortname);
+
+						$templatefile = locate_template(array($template_filename));
+
+						if(file_exists($templatefile)) 
+						{
+
+							$template_data = implode('', array_slice(file($templatefile), 0, 10));
+							$matches = '';
+							if (preg_match( '|Template Image:(.*)$|mi', $template_data, $matches)) 
+							{
+								$multi = explode(',',_cleanup_header_comment($matches[1]));
+
+								$template_image = $multi[0];
+							}
+						}
+
+						if(isset($options[$template_shortname]) && $options[$template_shortname] != '' && $options[$template_shortname] != false)
+						{
+							$template_image = $options[$template_shortname];
+						}
+
+						if(isset($options[$template_shortname.'-auto']) && $options[$template_shortname.'-auto'])
+						{
+
+							$pages = get_pages(array(
+								'meta_key' => '_wp_page_template',
+								'meta_value' => $template_filename,
+								'hierarchical' => 0
+							));
+
+							if(count($pages)>0)
+							{
+
+								$headers = get_headers(get_permalink( $pages[0] -> ID), 1);
+								if ($headers[0] == 'HTTP/1.1 200 OK') {
+									$template_image = get_permalink( $pages[0] -> ID);
+								}
+
+							}
+						}
+
+					?>
+					<div class="screenshot-wrapper">
+						<a href="<?php echo $template_filename; ?>"><img src="<?php echo $template_image;?>" class="screenshot" width="118" height="95"> <?php echo $template_name; ?></a>
+					</div>
+					<?php
+					}
+				?>
+				</div><input type="text" name="template_id" id="template_id" value="Default" hidden="hidden"> <input type="text" name="parent_id" id="parent_id" value="<?php echo $_POST['parent_id']?>" hidden="hidden"> <input type="submit" name="next" id="next" class="button button-primary" value="Finish">
+			</form>
+		</div>
+		<?php wp_footer(); ?>
+	</body>
+	</html>
+	<?php
+	exit();
+}
+add_action( 'wp_ajax_'        . 'clarity_ajax_template', 'clarity_render_ajax_template' );
+add_action( 'wp_ajax_nopriv_' . 'clarity_ajax_template', 'clarity_render_ajax_template' );

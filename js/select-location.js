@@ -7,8 +7,8 @@ jQuery(document).ready(function($){
 	
 	//$('.tree-wrapper').css({"height": wrapperHeight + 'px' });
 
-	$('.tree li:has(ul)').addClass('parent').addClass('closed').prepend('<img src="img/folder.png" alt="closed folder"/>');	
-	$('.tree li:not(:has(ul))').prepend('<img src="img/page_white.png" alt="closed folder"/>');	
+	$('.tree li:has(ul)').addClass('parent').addClass('closed').prepend('<img src="' + clarity_object.path + '/img/folder.png" alt="closed folder"/>');	
+	$('.tree li:not(:has(ul))').prepend('<img src="' + clarity_object.path + '/img/page_white.png" alt="closed folder"/>');	
 	
 	$('.tree a').click(function(e){
 	
@@ -44,15 +44,15 @@ jQuery(document).ready(function($){
     	{
     		$(this).parent().removeClass('closed');
 	    	$(this).parent().addClass('open');
-	    	$(this).attr('src','img/folder_page_white.png');
+	    	$(this).attr('src','' + clarity_object.path + '/img/folder_page_white.png');
 	    	$(this).attr('alt','open folder');
     	}
     	else if($(this).parent().hasClass('open'))
     	{
 	    	$(this).parent().removeClass('open');
 	    	$(this).parent().addClass('closed');
-	    	$(this).attr('src','img/folder.png');
-	    	$(this).attr('alt','closed folder');
+	    	$(this).attr('src', clarity_object.path + '/img/folder.png');
+	    	$(this).attr('alt', 'closed folder');
     	}
     });
 
