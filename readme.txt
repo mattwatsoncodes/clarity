@@ -16,6 +16,8 @@ Give your users an idea of what a page template looks like before they choose it
 
 Created by [Make Do](http://makedo.in/), this plugin that takes over the 'add new' page screen, and displays a visual picker to let you choose the page hierarchy and the page template.
 
+For usage instructions check out the screenshots.
+
 If you are using this plugin in your project [we would love to hear about it](mailto:hello@makedo.in).
 
 == Installation ==
