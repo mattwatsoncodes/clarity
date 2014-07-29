@@ -1,7 +1,7 @@
 <?php
 /**
  * @package Clarity
- * @version 1.0.0
+ * @version 1.0.2
  */
 
 /*
@@ -9,7 +9,7 @@ Plugin Name:  Clarity
 Plugin URI:   http://makedo.in/products/
 Description:  Choose heirachy and template visually in WordPress
 Author:       Make Do
-Version:      1.0.0
+Version:      1.0.2
 Author URI:   http://makedo.in
 Licence:      GPLv2 or later
 License URI:  http://www.gnu.org/licenses/gpl-2.0.html
@@ -116,7 +116,7 @@ function clarity_do_page() {
 								$template_image = $options['clarity_default-image'];
 							}
 
-							if( array_key_exists('clarity_default-image-auto', $options ) && $options['clarity_default-image-auto'] )
+							if( $options !== false && array_key_exists('clarity_default-image-auto', $options ) && $options['clarity_default-image-auto'] )
 							{
 
 								$pages = get_pages(array(
@@ -143,7 +143,7 @@ function clarity_do_page() {
 						<div class="additional-options">
 
 							<label for="users_can_register">
-							<input name="clarity_group[clarity_default-image-auto]" type="checkbox" value="1" <?php checked('1', array_key_exists('clarity_default-image-auto', $options ) && $options['clarity_default-image-auto']); ?> />
+							<input name="clarity_group[clarity_default-image-auto]" type="checkbox" value="1" <?php $options !== false && checked('1', array_key_exists('clarity_default-image-auto', $options ) && $options['clarity_default-image-auto']); ?> />
 							Auto generate</label>
 
 						</div>
@@ -181,7 +181,7 @@ function clarity_do_page() {
 								$template_image = $options[$template_shortname];
 							}
 
-							if(array_key_exists($template_shortname.'-auto', $options ) && $options[$template_shortname.'-auto'])
+							if( $options !== false && array_key_exists($template_shortname.'-auto', $options ) && $options[$template_shortname.'-auto'])
 							{
 
 								$pages = get_pages(array(
@@ -214,7 +214,7 @@ function clarity_do_page() {
 
 								<div class="additional-options">
 
-									<label for="users_can_register"><input name="clarity_group[<?php echo $template_shortname; ?>-auto]" type="checkbox" value="1" <?php checked('1', array_key_exists($template_shortname.'-auto', $options ) &&  $options[$template_shortname.'-auto']); ?> />Auto generate</label>
+									<label for="users_can_register"><input name="clarity_group[<?php echo $template_shortname; ?>-auto]" type="checkbox" value="1" <?php $options !== false && checked('1', array_key_exists($template_shortname.'-auto', $options ) &&  $options[$template_shortname.'-auto']); ?> />Auto generate</label>
 
 								</div>
 							</div>
